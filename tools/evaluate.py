@@ -115,8 +115,8 @@ def timing(frames: int = 60) -> list[str]:
             counts.append(len(det.detect(f)))
         dt = (time.perf_counter() - t0) / len(buffered)
         rows.append(
-            f"| {width} px | {dt*1000:.1f} | {1/dt:.0f} | {np.mean(counts):.2f} |"
-            + (" *(default)*" if width == 960 else "")
+            f"| {width} px{' (default)' if width == 960 else ''} | {dt*1000:.1f} | {1/dt:.0f} "
+            f"| {np.mean(counts):.2f} |"
         )
     return rows
 

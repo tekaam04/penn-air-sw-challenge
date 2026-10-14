@@ -1,11 +1,48 @@
-# PennAiR 2026 Software Challenge — Shape Detection
+# Background-Agnostic Shape Detection for Drone Vision
 
-Find solid shapes on any textured background, trace their outlines, mark their
-centres, and put them in metric 3D — on a static image, on video streamed frame
-by frame, and on a background the algorithm has never seen.
+Real-time detection, tracking and 3D localization of shapes from a moving
+camera, using classical computer vision only (no ML models). Built for the
+PennAiR 2026 software challenge; runs at ~50 fps on one CPU core at 1080p and
+ships as both a Python CLI and ROS 2 nodes.
 
-No pretrained models, no end-to-end solvers: classical CV, one idea, four
-supporting stages.
+![demo on the hard background](docs/hard_annotated.gif)
+
+**Python · OpenCV · NumPy · ROS 2 Jazzy · pytest**
+
+## Highlights
+
+- **Works on backgrounds it was never tuned for.** One detector, one set of
+  parameters, across grass, gravel and gradient-filled shapes. The cue is
+  texture, not colour.
+- **Accurate.** Mean IoU **0.988** and **0.36 px** centre error on the static
+  image, checked against an independent ground truth.
+- **Fast.** ~20 ms per 1080p frame (~50 fps) single-threaded, inside a 30 fps
+  real-time budget.
+- **Stable 3D.** Recovers distance to the ground plane (**254.0 ± 0.32 in**)
+  from a single reference circle; two different videos of the same scene agree
+  to 0.3%.
+- **Tracks through occlusion.** IDs survive shapes overlapping, with
+  constant-velocity coasting while a shape is hidden.
+- **Robot-ready.** ROS 2 packages publish shapes, outlines, 3D positions and
+  RViz markers, wrapping the same library the CLI uses.
+- **Tested and reproducible.** 17 pytest tests on synthetic scenes (no media
+  needed); `tools/evaluate.py` regenerates every number quoted here.
+
+## Results at a glance
+
+| Task | Result |
+| --- | --- |
+| Static image | 5/5 shapes, IoU 0.988, centre error 0.36 px |
+| Video on grass (1 837 frames) | 0 empty frames, ~50 fps |
+| Video on gravel + gradient fills (1 841 frames) | 0 empty frames, ~45 fps, no re-tuning |
+| Depth from one known circle | 254.0 ± 0.32 in (±0.13%) |
+| ROS 2 integration | 2 packages, 4 topics, one launch file |
+
+Full write-up of the approach, what failed, and what changed:
+[`docs/report.md`](docs/report.md).
+
+<details>
+<summary>Challenge checklist (Parts 1–6)</summary>
 
 | Part | Status | Where |
 | --- | --- | --- |
@@ -16,12 +53,11 @@ supporting stages.
 | 5 — ROS 2 nodes + launch file | ✅ | [`ros2_ws/src/`](ros2_ws/src) |
 | 6 — extras: tracking through overlap, model fitting, tests, metrics | ✅ | below |
 
-**The same detector, with the same parameters, runs all of it.** Nothing is
-tuned per video.
+</details>
 
 ---
 
-## Results
+## Detailed results
 
 ### Part 1 — static image
 
@@ -58,7 +94,7 @@ and its outline follows the part that is still visible.
 ## Quick start
 
 ```bash
-git clone <this repo> && cd penn-air-sw-challenge
+git clone https://github.com/tekaam04/penn-air-sw-challenge && cd penn-air-sw-challenge
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
