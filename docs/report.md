@@ -164,7 +164,7 @@ only state carried between frames is a threshold EMA and the tracker.
 33 ms budget at 30 fps. What made that possible:
 
 * **Work at 960 px wide, not 1920.** Halving the width quarters the pixels:
-  66 ms → 20 ms. Contours are scaled back up afterwards. The texture cue is
+  63 ms → 19 ms. Contours are scaled back up afterwards. The texture cue is
   scale-dependent, so this is not purely a cost saving — 960 px keeps grass
   "rough" relative to a 9 px window. Nothing measurably improves above it
   (IoU changes in the third decimal).
@@ -175,10 +175,10 @@ only state carried between frames is a threshold EMA and the tracker.
 
 | working width | ms / frame | fps |
 | --- | --- | --- |
-| 640 px | 13.8 | 73 |
-| **960 px (default)** | **20.6** | **49** |
-| 1280 px | 32.1 | 31 |
-| 1920 px | 65.8 | 15 |
+| 640 px | 12.8 | 78 |
+| **960 px (default)** | **19.3** | **52** |
+| 1280 px | 30.2 | 33 |
+| 1920 px | 62.5 | 16 |
 
 **Stability over 1 837 frames:** mean 4.55 shapes/frame, median 5, and *zero*
 frames with no detections. Frames reporting fewer than five were checked by

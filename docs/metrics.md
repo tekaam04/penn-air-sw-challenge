@@ -20,7 +20,7 @@ Regenerate with `python tools/evaluate.py`.
 | working width | ms / frame | fps | shapes / frame |
 | --- | --- | --- | --- |
 | 640 px | 12.8 | 78 | 4.18 |
-| 960 px | 19.3 | 52 | 4.18 | *(default)*
+| 960 px (default) | 19.3 | 52 | 4.18 |
 | 1280 px | 30.2 | 33 | 4.25 |
 | 1920 px | 62.5 | 16 | 4.57 |
 
